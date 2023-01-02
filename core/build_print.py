@@ -18,6 +18,7 @@ def build_person_report(name):
     command = BigData.racers_info[INC][1]
     print(place,racer_key_name,lap_time,command)
 
+
 def build_total_report():
     BigData = build_data("storage", files)
     score = BigData.score
