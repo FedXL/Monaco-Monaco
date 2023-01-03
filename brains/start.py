@@ -22,9 +22,9 @@ def run():
     if args.driver:
          build_person_print(folder,args.driver)
     elif args.asc:
-         build_total_print(folder, reverse=False)
+         build_total_print(folder, back_order=False)
     elif args.dasc:
-         build_total_print(folder, reverse=True)
+         build_total_print(folder, back_order=True)
 
 if __name__ == "__main__":
     run()
