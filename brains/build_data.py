@@ -55,6 +55,7 @@ def timer_parcer(lines):
 
 
 def make_time_lap(data: DATA):
+    """calculate time lap for each INC"""
     keys = data.time_start.keys()
     inc_time = OrderedDict()
     for key in keys:
@@ -68,6 +69,7 @@ def make_time_lap(data: DATA):
 
 
 def sort_time_lap(time_lap: OrderedDict):
+    """sort racer by places"""
     values = time_lap.values()
     new = {value: key for key, value in time_lap.items()}
     sorted_values = sorted(values)
@@ -78,6 +80,7 @@ def sort_time_lap(time_lap: OrderedDict):
 
 
 def make_dnf_in_rating(result: OrderedDict):
+    """change unvalid time_lap to DNF"""
     dnf_list = []
     for racer, time in result.items():
         if time.total_seconds() <= 0:
@@ -90,12 +93,14 @@ def make_dnf_in_rating(result: OrderedDict):
 
 
 def make_score(time_lap):
+    """make INC:PLACE vocabulary"""
     INC = list(time_lap.keys())
     score = {INC[place]: place +1 for place in range(len(INC))}
     return score
 
 
 def build_data(folder, files):
+    """func to build data"""
     data = []
     for file in files:
         text = read_folder(folder, file)

@@ -4,6 +4,7 @@ from fuzzywuzzy import fuzz
 
 
 def build_person_print(folder, name):
+    """build person report"""
     BigData = build_data(folder, files)
     for key in list(BigData.racers_initials.keys()):
         ratio = fuzz.ratio(key.lower(), name.lower())
@@ -25,6 +26,7 @@ def build_person_print(folder, name):
 
 
 def build_place_print(place):
+    """generate same lenght of string from 1 adn 11 numbers  """
     if len(str(place)) < 2:
         return str(place) + ". "
     else:
@@ -32,6 +34,7 @@ def build_place_print(place):
 
 
 def build_total_report(folder, back_order):
+    """preparing data for build total print"""
     BigData = build_data(folder, files)
     score = BigData.score
 
@@ -58,6 +61,8 @@ def build_total_report(folder, back_order):
 
 
 def check_max_string_length(report):
+    """find max length of racer name + command
+    used to build the same length of strings in build_total_print"""
     max_length = 0
     for string in report:
         if len(string[1] + string[2]) > max_length:
@@ -66,6 +71,7 @@ def check_max_string_length(report):
 
 
 def build_total_print(folder, back_order):
+    """generating of total report"""
     report = build_total_report(folder, back_order)
     max_length_name = check_max_string_length(report)
     counter = 0
@@ -75,12 +81,9 @@ def build_total_print(folder, back_order):
         place = build_place_print(string[0])
         name_and_command = string[1] + " " + string[2] + (max_length_name - len(string[1] + string[2])) * " "
         lap_time = string[3]
-        print(place, name_and_command, lap_time, sep="|")
+        print(place, name_and_command, lap_time, sep=" | ")
         if counter == 14:
             print("-" * (len(place + str(lap_time)) + max_length_name + 3))
         counter += 1
     print("*"*60)
 
-if __name__ == "__main__":
-    build_person_print("Kimi Raikkenen")
-    build_total_print("storage")
