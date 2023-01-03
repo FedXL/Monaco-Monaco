@@ -1,5 +1,4 @@
 import argparse
-
 from build_print import build_person_print, build_total_print
 
 
@@ -24,6 +23,7 @@ def run():
          build_total_print(folder, back_order=False)
     elif args.dasc:
          build_total_print(folder, back_order=True)
+
 
 if __name__ == "__main__":
     run()

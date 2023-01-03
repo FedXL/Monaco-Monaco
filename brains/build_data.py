@@ -1,3 +1,4 @@
+import codecs
 import datetime
 from collections import OrderedDict
 from dataclasses import dataclass
@@ -19,8 +20,8 @@ class DATA:
 
 
 def read_folder(folder, file):
-    parent_dir = "../"
-    with open(path.join(parent_dir,folder, file), "r") as record:
+    # parent_dir = "../"
+    with codecs.open(path.join(folder, file), "r", "utf-8") as record:
         text = record.readlines()
         lines = [line[:-1] for line in text if len(line) > 1]
     return lines
@@ -80,7 +81,7 @@ def sort_time_lap(time_lap: OrderedDict):
 
 
 def make_dnf_in_rating(result: OrderedDict):
-    """change unvalid time_lap to DNF"""
+    """change invalid time_lap to DNF"""
     dnf_list = []
     for racer, time in result.items():
         if time.total_seconds() <= 0:
