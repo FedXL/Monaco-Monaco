@@ -14,7 +14,12 @@ def build_person_print(folder,name):
     place = BigData.score[INC]
     lap_time = BigData.time_lap[INC]
     command = BigData.racers_info[INC][1]
-    print(str(place) + ". ", racer_key_name + " " + command, lap_time,sep="|")
+    print("Racer personal report",
+          "Racer place: " + str(place),
+          "Racer Name: " + racer_key_name,
+          "Racer Command: " + command,
+          "Lap Time: " + str(lap_time),
+           sep="\n")
 
 
 def build_place_print(place):
@@ -48,7 +53,7 @@ def check_max_string_length(report):
 
 
 def build_total_print(folder,reverse):
-    print("reverse type: ",reverse)
+    print(reverse)
     report=build_total_report(folder)
     max_length_name = check_max_string_length(report)
     counter = 0

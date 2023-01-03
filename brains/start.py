@@ -20,11 +20,11 @@ def run():
     args = use_parser()
     folder=args.files
     if args.driver:
-         build_person_print(folder, args.driver)
+         build_person_print(folder,args.driver)
     elif args.asc:
-         build_total_print(folder,args.asc)
+         build_total_print(folder, reverse=False)
     elif args.dasc:
-         build_total_print(folder,args.dasc)
+         build_total_print(folder, reverse=True)
 
 if __name__ == "__main__":
     run()
