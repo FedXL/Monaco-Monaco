@@ -6,6 +6,18 @@ from dataclasses import dataclass
 from os import path
 from fuzzywuzzy import fuzz
 from config import files, RACERS, limit
+import argparse
+
+def get_args():
+    parser = argparse.ArgumentParser(description="Monaco Racing Task",
+                                     epilog="I hope it will be funny")
+    parser.add_argument('--files', type=str, required=True, help="Enter your folder path")
+    group = parser.add_mutually_exclusive_group(required=True)
+    group.add_argument('--asc', help="direct order", action="store_true")
+    group.add_argument('--dasc', help="undirected order", action="store_true")
+    group.add_argument('--driver', help="driver name", type=str, default=None)
+    args = parser.parse_args()
+    return args
 
 
 @dataclass
@@ -103,7 +115,7 @@ def parce_files_all(file, text):
         return timer_parcer(text)
 
 
-def build_data(folder) -> DataStorage:
+def collect_data(folder) -> DataStorage:
     """func to build DataStorage"""
     data = [parce_files_all(file, read_folder(folder, file)) for file in files]
     race_info = DataStorage(racers_info=data[0][0],
@@ -137,7 +149,7 @@ def check_place(lap_time, score):
 
 
 def build_data_for_personal_report(racer_name: str, folder: str):
-    racers_info = build_data(folder)
+    racers_info = collect_data(folder)
     racer_name, racer_team = check_true_racer_name(racers_info, racer_name)
     initials = racers_info.racers_initials[racer_name]
     lap_time = racers_info.time_lap[initials]
@@ -147,7 +159,7 @@ def build_data_for_personal_report(racer_name: str, folder: str):
 
 
 def build_data_for_total_report(reverse: bool, folder: str):
-    racers_info = build_data(folder)
+    racers_info = collect_data(folder)
     if reverse:
         score = racers_info.score
         initials = list(score.keys())
@@ -160,7 +172,23 @@ def build_data_for_total_report(reverse: bool, folder: str):
 
 
 
-build_data_for_personal_report("Lewis Hamilton", "storage")
-build_data_for_personal_report("Fernando Alonso", "storage")
-build_data_for_total_report(True, "storage")
+def build_data():
+    args = get_args()
+    folder = args.files
+    if args.driver:
+        report:tuple = build_data_for_personal_report(args.driver, folder)
+        print(report)
+    else:
+        report:DataStorage = build_data_for_total_report(args.dasc, folder)
+        print(report.score)
+    return report
+
+# build_data_for_personal_report("Lewis Hamilton", "storage")
+# build_data_for_personal_report("Fernando Alonso", "storage")
+# build_data_for_total_report(True, "storage")
+
+if __name__ == "__main__":
+    build_data()
+
+
 

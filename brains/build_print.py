@@ -1,11 +1,11 @@
 from config import files
-from build_data import build_data
+from build_data import collect_data
 from fuzzywuzzy import fuzz
 
 
 def build_person_print(folder, name):
     """build person report"""
-    BigData = build_data(folder, files)
+    BigData = collect_data(folder, files)
     for key in list(BigData.racers_initials.keys()):
         ratio = fuzz.ratio(key.lower(), name.lower())
         if ratio >= 75:
@@ -35,7 +35,7 @@ def build_place_print(place):
 
 def build_total_report(folder, back_order):
     """preparing data for build total print"""
-    BigData = build_data(folder, files)
+    BigData = collect_data(folder, files)
     score = BigData.score
 
     if back_order:
