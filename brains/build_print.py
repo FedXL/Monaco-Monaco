@@ -3,26 +3,21 @@ from build_data import collect_data
 from fuzzywuzzy import fuzz
 
 
-def build_person_print(folder, name):
+def build_person_print(folder, report):
+
     """build person report"""
-    BigData = collect_data(folder, files)
-    for key in list(BigData.racers_initials.keys()):
-        ratio = fuzz.ratio(key.lower(), name.lower())
-        if ratio >= 75:
-            racer_key_name = key
-            break
-    INC = BigData.racers_initials[racer_key_name]
-    place = BigData.score[INC]
-    lap_time = BigData.time_lap[INC]
-    command = BigData.racers_info[INC][1]
+
     print("*" * 20,
           "Awesome Monaco #Personal Report",
-          "Place: " + str(place),
-          "Name: " + racer_key_name,
-          "Command: " + command,
-          "Lap Time: " + str(lap_time),
+          "Place: " + str(report.place),
+          "Name: " + report.racer_name,
+          "Command: " + report.team,
+          "Lap Time: " + report.lap_time,
           "*" * 20,
           sep="\n")
+
+
+def build_total_print()
 
 
 def build_place_print(place):

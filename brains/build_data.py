@@ -8,6 +8,7 @@ from fuzzywuzzy import fuzz
 from config import files, RACERS, limit
 import argparse
 
+
 def get_args():
     parser = argparse.ArgumentParser(description="Monaco Racing Task",
                                      epilog="I hope it will be funny")
@@ -28,6 +29,14 @@ class DataStorage:
     time_end: dict  # initials: time_end
     time_lap: dict  # initials: time_lap
     score: dict  # initials: place
+
+
+@dataclass()
+class RacerReport:
+    place: ""
+    name: ""
+    team: ""
+    lap_time: ""
 
 
 # ----------------------READ FILES--------------------------------------------------------------------------------------
@@ -139,7 +148,7 @@ def check_true_racer_name(data: DataStorage, racer_name):
         if ratio >= 75:
             racer_key_name = key
             break
-    return racer_key_name, data.racers_info[data.racers_initials[racer_key_name]][1]
+    return racer_key_name
 
 
 def check_place(lap_time, score):
@@ -148,47 +157,66 @@ def check_place(lap_time, score):
     return False
 
 
-def build_data_for_personal_report(racer_name: str, folder: str):
-    racers_info = collect_data(folder)
-    racer_name, racer_team = check_true_racer_name(racers_info, racer_name)
-    initials = racers_info.racers_initials[racer_name]
-    lap_time = racers_info.time_lap[initials]
-    place = check_place(lap_time, racers_info.score[initials])
-    report = (place, racer_name, racer_team, lap_time)
-    return report
+def get_initial_from_racer_name(racer_name: str, data: DataStorage):
+    true_racer_name = check_true_racer_name(data, racer_name)
+    initials = data.racers_initials[true_racer_name]
+    return initials
 
 
-def build_data_for_total_report(reverse: bool, folder: str):
+def get_report(initial, data: DataStorage):
+    racer_name = data.racers_info[initial][0]
+    racer_team = data.racers_info[initial][1]
+    lap_time = data.time_lap[initial]
+    place = check_place(lap_time, initial)
+    result = RacerReport(
+        place=place,
+        name=racer_name,
+        team=racer_team,
+        lap_time=lap_time
+    )
+    return result
+
+
+def reverse_score(racers_info):
+    score = racers_info.score
+    initials = list(score.keys())
+    winners = initials[0:limit]
+    winners.reverse()
+    losers = initials[limit:]
+    together = winners + losers
+    score_reversed = {initial: score[initial] for initial in together}
+    return score_reversed
+
+
+def build_data(reverse: bool, folder: str):
     racers_info = collect_data(folder)
     if reverse:
-        score = racers_info.score
-        initials = list(score.keys())
-        winners = initials[0:limit]
-        winners.reverse()
-        losers = initials[limit:]
-        together = winners + losers
-        racers_info.score = {initial: score[initial] for initial in together}
+        racers_info.score = reverse_score(racers_info)
     return racers_info
 
 
 
-def build_data():
+
+
+def build_total_report():
     args = get_args()
     folder = args.files
+
     if args.driver:
-        report:tuple = build_data_for_personal_report(args.driver, folder)
-        print(report)
+        racers_info = build_data(False,folder)
+        initials = get_initial_from_racer_name(args.driver,racers_info)
+        report = get_report(initials, racers_info)
     else:
-        report:DataStorage = build_data_for_total_report(args.dasc, folder)
-        print(report.score)
+        racers_info = build_data(True,folder)
+        report = [get_report(initial,racers_info) for initial in racers_info.score.keys()]
+    for i in report:
+        print(i)
     return report
+
 
 # build_data_for_personal_report("Lewis Hamilton", "storage")
 # build_data_for_personal_report("Fernando Alonso", "storage")
 # build_data_for_total_report(True, "storage")
 
 if __name__ == "__main__":
-    build_data()
-
-
-
+    build_total_report()
