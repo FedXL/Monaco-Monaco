@@ -167,7 +167,8 @@ def get_report(initial, data: DataStorage):
     racer_name = data.racers_info[initial][0]
     racer_team = data.racers_info[initial][1]
     lap_time = data.time_lap[initial]
-    place = check_place(lap_time, initial)
+    place = data.score[initial]
+    place = check_place(lap_time, place)
     result = RacerReport(
         place=place,
         name=racer_name,
@@ -195,28 +196,19 @@ def build_data(reverse: bool, folder: str):
     return racers_info
 
 
-
-
-
-def build_total_report():
+def build_report():
     args = get_args()
     folder = args.files
-
     if args.driver:
-        racers_info = build_data(False,folder)
-        initials = get_initial_from_racer_name(args.driver,racers_info)
+        racers_info = build_data(False, folder)
+        initials = get_initial_from_racer_name(args.driver, racers_info)
         report = get_report(initials, racers_info)
     else:
-        racers_info = build_data(True,folder)
-        report = [get_report(initial,racers_info) for initial in racers_info.score.keys()]
+        racers_info = build_data(True, folder)
+        report = [get_report(initial, racers_info) for initial in racers_info.score.keys()]
     for i in report:
         print(i)
     return report
 
-
-# build_data_for_personal_report("Lewis Hamilton", "storage")
-# build_data_for_personal_report("Fernando Alonso", "storage")
-# build_data_for_total_report(True, "storage")
-
 if __name__ == "__main__":
-    build_total_report()
+    build_report()
