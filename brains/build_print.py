@@ -86,4 +86,3 @@ def build_total_print(folder, back_order):
             print("-" * (len(place + str(lap_time)) + max_length_name + 3))
         counter += 1
     print("*"*60)
-
