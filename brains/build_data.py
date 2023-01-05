@@ -33,18 +33,17 @@ class DataStorage:
 
 @dataclass()
 class RacerReport:
-    place: ""
-    name: ""
-    team: ""
-    lap_time: ""
+    place: str # Racer rating
+    name: str  # Racer name
+    team: str   # Racer team
+    lap_time: str # Racer lap time
 
 
 # ----------------------READ FILES--------------------------------------------------------------------------------------
 
 
 def read_folder(folder, file):
-    a = "../"
-    with codecs.open(path.join("C:\\Users\Asus\\PycharmProjects\\pythonProject20\\storage", file), "r", 'utf-8') as record:
+    with codecs.open(path.join(folder, file), "r", 'utf-8') as record:
         text = record.readlines()
         lines = [line[:-1] for line in text if len(line) > 1]
         record.close()

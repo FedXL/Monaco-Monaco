@@ -31,6 +31,11 @@ def clean_string_len(max_racers_info_length, name, team):
 
 
 def build_print(reports):
+    if len(reports) > 1:
+        order = "Total Report"
+    else:
+        order = "Personal Report"
+    print(f"Awesome Monaco {order}")
     max_racers_info_lenght = check_max_string_length(reports)
     counter = 0
     max_count = limit
