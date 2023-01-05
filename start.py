@@ -1,19 +1,10 @@
-from parser import get_args
-from build_print import build_person_print, build_total_print
-
-
+from brains.build_data import  build_data
+from brains.build_print import build_print
 
 
 def main():
-    args = get_args()
-    folder = args.files
-    if args.driver:
-        build_person_print(folder, args.driver)
-    elif args.asc:
-        build_total_print(folder, back_order=False)
-    elif args.dasc:
-        build_total_print(folder, back_order=True)
-
+    report = build_data()
+    build_print(report)
 
 if __name__ == "__main__":
     main()

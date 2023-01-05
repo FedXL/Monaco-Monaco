@@ -5,7 +5,7 @@ from collections import OrderedDict
 from dataclasses import dataclass
 from os import path
 from fuzzywuzzy import fuzz
-from config import files, RACERS, limit
+from brains.config import files, RACERS, limit
 import argparse
 
 
@@ -15,7 +15,7 @@ def get_args():
     parser.add_argument('--files', type=str, required=True, help="Enter your folder path")
     group = parser.add_mutually_exclusive_group(required=True)
     group.add_argument('--asc', help="direct order", action="store_true")
-    group.add_argument('--dasc', help="undirected order", action="store_true")
+    group.add_argument('--desc', help="undirected order", action="store_true")
     group.add_argument('--driver', help="driver name", type=str, default=None)
     args = parser.parse_args()
     return args

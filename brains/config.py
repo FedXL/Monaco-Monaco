@@ -1,4 +1,3 @@
-# Config names of input file_names
 
 
 START = "start.log"             #starting time: INCyear-mounth-day_hour:minutes:seconds
