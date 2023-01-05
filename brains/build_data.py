@@ -160,8 +160,6 @@ def build_data_for_total_report(reverse: bool, folder: str):
 
 
 
-
-
 build_data_for_personal_report("Lewis Hamilton", "storage")
 build_data_for_personal_report("Fernando Alonso", "storage")
 build_data_for_total_report(True, "storage")
