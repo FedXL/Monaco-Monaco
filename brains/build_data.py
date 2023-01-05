@@ -44,7 +44,7 @@ class RacerReport:
 
 def read_folder(folder, file):
     a = "../"
-    with codecs.open(path.join("../", folder, file), "r", 'utf-8') as record:
+    with codecs.open(path.join("C:\\Users\Asus\\PycharmProjects\\pythonProject20\\storage", file), "r", 'utf-8') as record:
         text = record.readlines()
         lines = [line[:-1] for line in text if len(line) > 1]
         record.close()
@@ -196,18 +196,15 @@ def build_data(reverse: bool, folder: str):
     return racers_info
 
 
-def build_report():
-    args = get_args()
+def build_report(args):
     folder = args.files
     if args.driver:
         racers_info = build_data(False, folder)
         initials = get_initial_from_racer_name(args.driver, racers_info)
-        report = get_report(initials, racers_info)
+        report = [get_report(initials, racers_info)]
     else:
-        racers_info = build_data(True, folder)
+        racers_info = build_data(args.dasc, folder)
         report = [get_report(initial, racers_info) for initial in racers_info.score.keys()]
-    for i in report:
-        print(i)
     return report
 
 if __name__ == "__main__":
