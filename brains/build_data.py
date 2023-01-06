@@ -2,7 +2,6 @@ import datetime
 from collections import OrderedDict
 
 from os import path
-from fuzzywuzzy import fuzz
 from brains.config import files, RACERS, limit, START, END
 
 
@@ -14,7 +13,6 @@ class RacerInfo:
         self.start_time = start_time
         self.end_time = end_time
         self.lap_time = lap_time
-
 
     def calculate_lap_time(self):
         start = self.start_time.split(":")
@@ -28,20 +26,21 @@ class RacerInfo:
         self.start_time = None
         self.end_time = None
 
-
-    def get_print(self):
+    def get_print(self, spacer):
         print(
             self.place,
-            self.name,
-            self.team,
+            self.name +" " + self.team + " " * spacer,
             self.lap_time,
             sep=" | "
         )
 
 
-def find_driver(driver):
-    print(driver)
-    pass
+def find_driver(driver,data):
+    drivers_dict = {value.name : key for key ,value in data.items()}
+    print(drivers_dict)
+    abr_driver = drivers_dict[driver]
+    return abr_driver
+
 
 
 def build_report(folder, driver: str = None, reverse: bool = False):
@@ -50,7 +49,8 @@ def build_report(folder, driver: str = None, reverse: bool = False):
     if reverse:
         data = reverse_data(data)
     if driver:
-        data = find_driver(driver)
+        abr_driver = find_driver(driver,data)
+        data = {abr_driver: data[abr_driver]}
     return data
 
 
@@ -85,7 +85,7 @@ def add_rating_to_data(data_collection: {str: RacerInfo}):
             racer.place = "DNF"
             cheaters.append(abr)
         else:
-            racer.place = counter
+            racer.place = dub_place_print(counter)
             counter += 1
     for cheater in cheaters:
         data.move_to_end(cheater)
@@ -125,7 +125,21 @@ def sort_data(data):
     racers = OrderedDict({abr_lap_time[lap]: data[abr_lap_time[lap]] for lap in lap_time})
     return racers
 
-if __name__=="__main__":
+
+def dub_place_print(place):
+    """generate same lenght of string from 1 adn 11 numbers  """
+    if place == "DNF":
+        return place
+    elif len(str(place)) < 2:
+        place = str(place) + ". "
+    else:
+        place = str(place) + "."
+    return place
+
+
+
+
+if __name__ == "__main__":
     folder = "C:\\Users\\Asus\\PycharmProjects\\monaco\\storage"
     build_report(folder, True)
     report = build_report(folder, False)

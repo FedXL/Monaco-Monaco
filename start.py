@@ -5,8 +5,7 @@ from brains.parser import get_args
 
 def main():
     args = get_args()
-    report = build_report(folder = args.files, driver=args.driver, reverse=args.asc)
-
+    report = build_report(folder = args.files, driver=args.driver, reverse=args.desc)
     build_print(report)
 
 if __name__ == "__main__":

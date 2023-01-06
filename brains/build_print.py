@@ -1,27 +1,20 @@
 from brains.build_data import RacerInfo
+from brains.config import limit
 
 
 def build_print(report: {str:RacerInfo}):
     spaces_max = check_max_string_length(report)
+    counter = 0
     for racer in report.values():
-        name = racer.name
-        team = racer.team
-        place = dub_place_print(racer.place)
+        if counter == limit:
+            print("_"*60)
+        spacer_length = clean_string_len(spaces_max,racer.name,racer.team)
+        racer.get_print(spacer_length)
+        counter +=1
 
-        lap_time = racer.lap_time
-        spaces_len = clean_string_len(spaces_max,name,team)
-        print(place, name + spaces_len*" " + team, lap_time, sep=" | ")
-
-
-def dub_place_print(place):
-    """generate same lenght of string from 1 adn 11 numbers  """
-    if place == "DNF":
-        return place
-    elif len(str(place)) < 2:
-        place = str(place) + ". "
-    else:
-        place = str(place) + "."
-    return place
+def clean_string_len(max_racers_info_length, name, team):
+    space_len = max_racers_info_length - len(name + team)
+    return space_len
 
 
 def check_max_string_length(reports):
