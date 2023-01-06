@@ -15,6 +15,7 @@ class RacerInfo:
         self.end_time = end_time
         self.lap_time = lap_time
 
+
     def calculate_lap_time(self):
         start = self.start_time.split(":")
         end = self.end_time.split(":")
@@ -27,6 +28,7 @@ class RacerInfo:
         self.start_time = None
         self.end_time = None
 
+
     def get_print(self):
         print(
             self.place,
@@ -37,11 +39,19 @@ class RacerInfo:
         )
 
 
-def build_report(folder, pos):
+def find_driver(driver):
+    print(driver)
+    pass
+
+
+def build_report(folder, driver: str = None, reverse: bool = False):
     data = collect_data(folder)
     data = add_rating_to_data(data)
-    if pos:
+    if reverse:
         data = reverse_data(data)
+    if driver:
+        data = find_driver(driver)
+    return data
 
 
 def collect_data(folder):
@@ -57,18 +67,15 @@ def collect_data(folder):
 
 def reverse_data(data):
     initials = list(data.keys())
-    print(initials)
     winners = initials[0:limit]
     winners.reverse()
     losers = initials[limit:]
     together = winners + losers
-    print(together)
-    new_data = {abr:data[abr] for abr in together}
+    new_data = {abr: data[abr] for abr in together}
     return new_data
 
 
 def add_rating_to_data(data_collection: {str: RacerInfo}):
-
     data = sort_data(data_collection)
     cheaters = []
     counter = 1
@@ -110,7 +117,6 @@ def parce_time(line):
     return initials, time
 
 
-
 def sort_data(data):
     abr = list(data.keys())
     lap_time = [time.lap_time for time in data.values()]
@@ -119,11 +125,10 @@ def sort_data(data):
     racers = OrderedDict({abr_lap_time[lap]: data[abr_lap_time[lap]] for lap in lap_time})
     return racers
 
-folder = "C:\\Users\\Asus\\PycharmProjects\\monaco\\storage"
-build_report(folder, True)
-
-
-
-
-
+if __name__=="__main__":
+    folder = "C:\\Users\\Asus\\PycharmProjects\\monaco\\storage"
+    build_report(folder, True)
+    report = build_report(folder, False)
+    for i in report.values():
+        i.get_print()
 
