@@ -9,7 +9,7 @@ def build_print(report: {str:RacerInfo}):
         if counter == limit:
             print("_"*60)
         spacer_length = clean_string_len(spaces_max,racer.name,racer.team)
-        racer.get_print(spacer_length)
+        racer.print(spacer_length)
         counter +=1
 
 def clean_string_len(max_racers_info_length, name, team):
@@ -28,7 +28,4 @@ def check_max_string_length(reports):
     return max_length
 
 
-def clean_string_len(max_racers_info_length, name, team):
-    space_len = max_racers_info_length - len(name + team)
-    return space_len
 

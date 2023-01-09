@@ -1,22 +1,19 @@
 import datetime
-from collections import OrderedDict
-
 from os import path
-from brains.config import files, RACERS, limit, START, END
+from brains.config import files, RACERS, limit, START, END, RACERS_TYPE
+from brains.utils import calculate_critical_threshold
 
 
 class RacerInfo:
-    def __init__(self, place=None, name=None, team=None, start_time=None, end_time=None, lap_time=None):
+    def __init__(self, place=None, name=None, team=None, lap_time=None):
         self.place = place
         self.name = name
         self.team = team
-        self.start_time = start_time
-        self.end_time = end_time
         self.lap_time = lap_time
 
-    def calculate_lap_time(self):
-        start = self.start_time.split(":")
-        end = self.end_time.split(":")
+    def calculate_lap_time(self, start_time, end_time):
+        start = start_time.split(":")
+        end = end_time.split(":")
         time_start = [float(num) for num in start]
         time_end = [float(num) for num in end]
         tm1 = datetime.timedelta(hours=time_start[0], minutes=time_start[1], seconds=time_start[2])
@@ -26,70 +23,72 @@ class RacerInfo:
         self.start_time = None
         self.end_time = None
 
-    def get_print(self, spacer):
+    def print(self, spacer):
+        name_and_team = self.name + " " + self.team
+        name_and_team.ljust(spacer)
+
         print(
             self.place,
-            self.name +" " + self.team + " " * spacer,
+            name_and_team,
             self.lap_time,
             sep=" | "
         )
 
 
-def find_driver(driver,data):
-    drivers_dict = {value.name : key for key ,value in data.items()}
-    print(drivers_dict)
+def find_driver(driver, data):
+    drivers_dict = {value.name: key for key, value in data.items()}
     abr_driver = drivers_dict[driver]
     return abr_driver
 
 
-
 def build_report(folder, driver: str = None, reverse: bool = False):
     data = collect_data(folder)
-    data = add_rating_to_data(data)
+    data, mistakes = add_rating_to_data(data)
+
     if reverse:
         data = reverse_data(data)
+    data = {**data, **mistakes}
+
     if driver:
-        abr_driver = find_driver(driver,data)
+        data = {**data, **mistakes}
+        abr_driver = find_driver(driver, data)
         data = {abr_driver: data[abr_driver]}
+        return data
+
     return data
 
 
 def collect_data(folder):
     abbreviations = read_file(folder, RACERS)
     abbreviations = [abr.split("_") for abr in abbreviations]
-    data_collection = {line[0]: RacerInfo(name=line[1], team=line[2]) for line in abbreviations}
+    data_collection = {initial: RacerInfo(name=name, team=team) for initial, name, team in abbreviations}
     start_time, end_time = read_file(folder, START), read_file(folder, END)
     data_collection = add_time(start_time, end_time, data_collection)
-    for racer in data_collection.values():
-        racer.calculate_lap_time()
     return data_collection
 
 
 def reverse_data(data):
     initials = list(data.keys())
-    winners = initials[0:limit]
-    winners.reverse()
-    losers = initials[limit:]
-    together = winners + losers
-    new_data = {abr: data[abr] for abr in together}
+    initials.reverse()
+    new_data = {abr: data[abr] for abr in initials}
     return new_data
 
 
 def add_rating_to_data(data_collection: {str: RacerInfo}):
     data = sort_data(data_collection)
-    cheaters = []
+    mistakes = {}
     counter = 1
     for abr, racer in data.items():
-        if racer.lap_time.total_seconds() <= 30:
+        if racer.lap_time.total_seconds() <= calculate_critical_threshold(RACERS_TYPE):
             racer.lap_time = "INVALID TIME"
             racer.place = "DNF"
-            cheaters.append(abr)
+            mistakes[abr] = racer
         else:
             racer.place = dub_place_print(counter)
             counter += 1
-    for cheater in cheaters:
-        data.move_to_end(cheater)
-    return data
+    for abr in mistakes.keys():
+        data.pop(abr)
+    return data, mistakes
 
 
 def read_file(folder, file):
@@ -99,15 +98,11 @@ def read_file(folder, file):
 
 
 def add_time(start_time_list: list, end_time_list: list, data: {str: RacerInfo}) -> {str: RacerInfo}:
-    for line in start_time_list:
-        initials, time = parce_time(line)
-        racer: RacerInfo = data.get(initials)
-        racer.start_time = time
-
-    for line in end_time_list:
-        initials, time = parce_time(line)
-        racer: RacerInfo = data.get(initials)
-        racer.end_time = time
+    start_time = [parce_time(line) for line in start_time_list]
+    start_time = {initial: time for initial, time in start_time}
+    end_time = {initial: time for initial, time in [parce_time(line) for line in end_time_list]}
+    for initial,racer in data.items():
+        racer.calculate_lap_time(start_time[initial], end_time[initial])
     return data
 
 
@@ -122,7 +117,7 @@ def sort_data(data):
     lap_time = [time.lap_time for time in data.values()]
     abr_lap_time = dict(zip(lap_time, abr))
     lap_time.sort()
-    racers = OrderedDict({abr_lap_time[lap]: data[abr_lap_time[lap]] for lap in lap_time})
+    racers = {abr_lap_time[lap]: data[abr_lap_time[lap]] for lap in lap_time}
     return racers
 
 
@@ -136,13 +131,4 @@ def dub_place_print(place):
         place = str(place) + "."
     return place
 
-
-
-
-if __name__ == "__main__":
-    folder = "C:\\Users\\Asus\\PycharmProjects\\monaco\\storage"
-    build_report(folder, True)
-    report = build_report(folder, False)
-    for i in report.values():
-        i.get_print()
 
