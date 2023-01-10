@@ -7,7 +7,7 @@ RACERS = "abbreviations.txt"
 # number of wining racers
 limit = 10
 files = (RACERS, START, END)
-
+line_length = 65
 RACERS_TYPE = "BOLID"
 
 
