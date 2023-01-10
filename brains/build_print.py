@@ -2,30 +2,28 @@ from brains.build_data import RacerInfo
 from brains.config import limit
 
 
-def build_print(report: {str:RacerInfo}):
-    spaces_max = check_max_string_length(report)
-    counter = 0
-    for racer in report.values():
-        if counter == limit:
-            print("_"*60)
-        spacer_length = clean_string_len(spaces_max,racer.name,racer.team)
-        racer.print(spacer_length)
-        counter +=1
+def build_print(report: {str: RacerInfo}):
+    spacer = check_max_string_length(report)
+    racers = list(report.values())
+    
+    befor_limit = racers[:limit]
+    after_limit = racers[limit:]
 
-def clean_string_len(max_racers_info_length, name, team):
-    space_len = max_racers_info_length - len(name + team)
-    return space_len
+    for racer in befor_limit:
+        racer.print(spacer)
+    print("_" * 60)
+    for racer in after_limit:
+        racer.print(spacer)
+
 
 
 def check_max_string_length(reports):
     """find max length of racer name + command
     used to build the same length of strings in build_total_print"""
-    max_length = 0
-    for report in reports.values():
-        length = len(report.name + report.team)
-        if length > max_length:
-            max_length = length
-    return max_length
+
+    max_length = max(reports.values(), key= lambda i : len(i.name) + len(i.team))
+    max_length = len( max_length.team) + len(max_length.name)
 
 
-
+    max_length = max([len(report.name) + len(report.team) for report in reports.values()])
+    return max_length + 1

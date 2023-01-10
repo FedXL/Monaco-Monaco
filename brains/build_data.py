@@ -2,6 +2,8 @@ import datetime
 from os import path
 from brains.config import files, RACERS, limit, START, END, RACERS_TYPE
 from brains.utils import calculate_critical_threshold
+from datetime import datetime, time
+
 
 
 class RacerInfo:
@@ -12,24 +14,18 @@ class RacerInfo:
         self.lap_time = lap_time
 
     def calculate_lap_time(self, start_time, end_time):
-        start = start_time.split(":")
-        end = end_time.split(":")
-        time_start = [float(num) for num in start]
-        time_end = [float(num) for num in end]
-        tm1 = datetime.timedelta(hours=time_start[0], minutes=time_start[1], seconds=time_start[2])
-        tm2 = datetime.timedelta(hours=time_end[0], minutes=time_end[1], seconds=time_end[2])
-        time_delta = tm2 - tm1
+        t1 = datetime.strptime(start_time.strip(), "%H:%M:%S.%f")
+        t2 = datetime.strptime(end_time.strip(), "%H:%M:%S.%f")
+        time_delta = t2 - t1
         self.lap_time = time_delta
         self.start_time = None
         self.end_time = None
 
     def print(self, spacer):
         name_and_team = self.name + " " + self.team
-        name_and_team.ljust(spacer)
-
         print(
             self.place,
-            name_and_team,
+            name_and_team.ljust(spacer, " "),
             self.lap_time,
             sep=" | "
         )
@@ -40,21 +36,21 @@ def find_driver(driver, data):
     abr_driver = drivers_dict[driver]
     return abr_driver
 
+def reverse_data(data):
+    initials = list(data.keys())
+    initials.reverse()
+    new_data = {abr: data[abr] for abr in initials}
+    return new_data
 
 def build_report(folder, driver: str = None, reverse: bool = False):
     data = collect_data(folder)
     data, mistakes = add_rating_to_data(data)
-
+    data = {**data, **mistakes}
     if reverse:
         data = reverse_data(data)
-    data = {**data, **mistakes}
-
     if driver:
-        data = {**data, **mistakes}
         abr_driver = find_driver(driver, data)
         data = {abr_driver: data[abr_driver]}
-        return data
-
     return data
 
 
@@ -67,11 +63,7 @@ def collect_data(folder):
     return data_collection
 
 
-def reverse_data(data):
-    initials = list(data.keys())
-    initials.reverse()
-    new_data = {abr: data[abr] for abr in initials}
-    return new_data
+
 
 
 def add_rating_to_data(data_collection: {str: RacerInfo}):
@@ -117,12 +109,15 @@ def sort_data(data):
     lap_time = [time.lap_time for time in data.values()]
     abr_lap_time = dict(zip(lap_time, abr))
     lap_time.sort()
-    racers = {abr_lap_time[lap]: data[abr_lap_time[lap]] for lap in lap_time}
+    racers = {}
+    for lap in lap_time:
+        abr = abr_lap_time[lap]
+        racers[abr] = data[abr]
     return racers
 
 
 def dub_place_print(place):
-    """generate same lenght of string from 1 adn 11 numbers  """
+    """generate same lenght of string from 1 adn 11 numbers"""
     if place == "DNF":
         return place
     elif len(str(place)) < 2:
