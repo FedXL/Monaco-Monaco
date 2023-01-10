@@ -6,10 +6,10 @@ def calculate_critical_threshold(RACERS_TYPE):
     monaco_lap_distance = 3337  # meters
     if RACERS_TYPE == "AIRCRAFT FITER":
         max_fighter_speed = 3000 # km/hour
-        critical_threshold = calculate_minimal_theoretical_time_of_lap(max_fighter_speed, 3337)
+        critical_threshold = calculate_minimal_theoretical_time_of_lap(max_fighter_speed, monaco_lap_distance)
     else:
         max_bolid_speed = 350 # km/hour
-        critical_threshold = calculate_minimal_theoretical_time_of_lap(max_bolid_speed, 3337)
+        critical_threshold = calculate_minimal_theoretical_time_of_lap(max_bolid_speed, monaco_lap_distance)
     return critical_threshold
 
 
