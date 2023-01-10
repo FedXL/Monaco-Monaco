@@ -5,14 +5,17 @@ from brains.config import limit, line_length
 def build_print(report: {str: RacerInfo}, reverse=True):
     spacer = check_max_string_length(report)
     racers = list(report.values())
+
     before_line = racers[:limit]
     after_line = racers[limit:]
+
     if reverse:
         before_line = racers[:-limit]
         after_line = racers[-limit:]
 
     for racer in before_line:
         racer.print(spacer)
+
     print("_" * line_length)
     for racer in after_line:
         racer.print(spacer)
