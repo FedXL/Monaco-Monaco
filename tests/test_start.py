@@ -1,10 +1,10 @@
-from unittest.mock import patch, Mock, MagicMock
-from start import main
+from unittest.mock import patch
+from src.start import main
 
 
 def replace_files(folder, file):
     from tests.case import start, end, abbreviations
-    from brains.config import RACERS, START, END
+    from src.brains.config import RACERS, START, END
     if file == RACERS:
         text = abbreviations.strip().split("\n")
         return text
@@ -27,6 +27,7 @@ def test_main_driver(capsys):
     assert captured.out.split("\n") == ['DNF | Sergey Sirotkin WILLIAMS MERCEDES | INVALID TIME',
                                         '_________________________________________________________________',
                                         '']
+
 
 
 @patch('sys.argv',

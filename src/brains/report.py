@@ -2,7 +2,7 @@ from brains.build_data import RacerInfo
 from brains.config import limit, line_length
 
 
-def build_print(report: {str: RacerInfo}, reverse=True):
+def print_report(report: {str: RacerInfo}, reverse=True):
     """Проблемма не в двух словарях а как правильно Reverce реализовывать"""
     spacer = check_max_string_length(report)
     racers = list(report.values())

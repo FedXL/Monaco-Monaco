@@ -1,8 +1,8 @@
 import datetime
 from os import path
-from brains.config import files, RACERS, limit, START, END, racers_type
+from brains.config import RACERS, START, END, racers_type
 from brains.utils import calculate_critical_threshold
-from datetime import datetime, time
+from datetime import datetime
 
 
 class RacerInfo:
