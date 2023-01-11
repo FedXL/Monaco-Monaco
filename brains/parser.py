@@ -1,5 +1,6 @@
 import argparse
 
+
 def get_args():
     parser = argparse.ArgumentParser(description="Monaco Racing Task",
                                      epilog="I hope it will be funny")

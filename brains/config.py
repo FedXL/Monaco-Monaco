@@ -8,5 +8,6 @@ RACERS = "abbreviations.txt"
 limit = 10
 files = (RACERS, START, END)
 line_length = 65
-RACERS_TYPE = "BOLID" # optional AIRCRAFT_FIGHTER
+racers_type = "BOLID" # optional AIRCRAFT_FIGHTER
 
+""" ВСЕ РАВНО НЕ ПОНЯЛ КАК КОНФИГ ФАЙЛЫ ОФОРМЛЯТЬ"""

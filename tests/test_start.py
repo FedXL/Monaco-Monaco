@@ -87,3 +87,10 @@ def test_main_desc(capsys):
                                         '']
 
 
+# @patch('sys.argv',
+#        ['start.py', '--files', 'folder_of_storage'])
+# @patch('brains.build_data.read_file', replace_files)
+# def test_main_negative_(capsys):
+#     main()
+#     captured = capsys.readouterr()
+#     assert captured.out.split("\n") == "d"

@@ -1,9 +1,8 @@
 import datetime
 from os import path
-from brains.config import files, RACERS, limit, START, END, RACERS_TYPE
+from brains.config import files, RACERS, limit, START, END, racers_type
 from brains.utils import calculate_critical_threshold
 from datetime import datetime, time
-
 
 
 class RacerInfo:
@@ -18,8 +17,6 @@ class RacerInfo:
         t2 = datetime.strptime(end_time.strip(), "%H:%M:%S.%f")
         time_delta = t2 - t1
         self.lap_time = time_delta
-        self.start_time = None
-        self.end_time = None
 
     def print(self, spacer):
         name_and_team = self.name + " " + self.team
@@ -36,11 +33,13 @@ def find_driver(driver, data):
     abr_driver = drivers_dict[driver]
     return abr_driver
 
+
 def reverse_data(data):
     initials = list(data.keys())
     initials.reverse()
     new_data = {abr: data[abr] for abr in initials}
     return new_data
+
 
 def build_report(folder, driver: str = None, reverse: bool = False):
     data = collect_data(folder)
@@ -63,15 +62,12 @@ def collect_data(folder):
     return data_collection
 
 
-
-
-
 def add_rating_to_data(data_collection: {str: RacerInfo}):
     data = sort_data(data_collection)
     mistakes = {}
     counter = 1
     for abr, racer in data.items():
-        if racer.lap_time.total_seconds() <= calculate_critical_threshold(RACERS_TYPE):
+        if racer.lap_time.total_seconds() <= calculate_critical_threshold(racers_type):
             racer.lap_time = "INVALID TIME"
             racer.place = "DNF"
             mistakes[abr] = racer
@@ -93,7 +89,7 @@ def add_time(start_time_list: list, end_time_list: list, data: {str: RacerInfo})
     start_time = [parce_time(line) for line in start_time_list]
     start_time = {initial: time for initial, time in start_time}
     end_time = {initial: time for initial, time in [parce_time(line) for line in end_time_list]}
-    for initial,racer in data.items():
+    for initial, racer in data.items():
         racer.calculate_lap_time(start_time[initial], end_time[initial])
     return data
 
@@ -125,5 +121,3 @@ def dub_place_print(place):
     else:
         place = str(place) + "."
     return place
-
-
