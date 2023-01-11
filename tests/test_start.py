@@ -1,10 +1,10 @@
 from unittest.mock import patch
-from src.start import main
+from src import main
 
 
 def replace_files(folder, file):
     from tests.case import start, end, abbreviations
-    from src.brains.config import RACERS, START, END
+    from awesome_monaco_FEDORKURUTS.brains.config import RACERS, START, END
     if file == RACERS:
         text = abbreviations.strip().split("\n")
         return text
