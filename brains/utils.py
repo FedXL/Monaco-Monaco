@@ -1,5 +1,4 @@
-
-
+import time
 
 
 def calculate_critical_threshold(RACERS_TYPE):
@@ -19,11 +18,20 @@ def calculate_minimal_theoretical_time_of_lap(max_speed,distance):
     return min_time
 
 
-def zebra_function(arg1, arg2):
-    # Call to the function you want to mock
-    result = my_function(arg1, arg2)
-    print(result)
+def read_some (a):
+    if a == 1:
+        time.sleep(3)
+        return 111
+    if a == 2:
+        time.sleep(3)
+        return 222
+    if a == 3:
+        time.sleep(3)
+        return 333
 
-
-def my_function(arg1, arg2):
-    return arg1 + arg2
+def main():
+    result = []
+    for i in [1,2,3]:
+        read_file = read_some(i)
+        result.append(read_file)
+    return result
